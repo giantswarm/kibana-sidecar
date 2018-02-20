@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+
+  kibana-sidecar:
+    build: .
+    image: quay.io/giantswarm/kibana-sidecar
+    command: daemon
+    depends_on:
+      - elasticsearch
+
+  elasticsearch:
+    image: quay.io/giantswarm/elasticsearch-oss:6.1.1
+    ports:
+      - 9200:9200

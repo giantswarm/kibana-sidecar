@@ -1,0 +1,8 @@
+
+[[constraint]]
+  name = "github.com/olivere/elastic"
+  version = "6.1.8"
+
+[[constraint]]
+  name = "github.com/spf13/cobra"
+  version = "0.0.1"
