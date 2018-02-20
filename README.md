@@ -1,4 +1,7 @@
-# kibana-config-sidecar
+[![CircleCI](https://circleci.com/gh/giantswarm/kibana-sidecar.svg?style=svg&circle-token=d56ef75d19e44462aa3a61cc90c6f60024756b94)](https://circleci.com/gh/giantswarm/kibana-sidecar)
+[![Docker Repository on Quay](https://quay.io/repository/giantswarm/kibana-sidecar/status "Docker Repository on Quay")](https://quay.io/repository/giantswarm/kibana-sidecar)
+
+# kibana-sidecar
 
 A sidecar for Kibana to apply a prepared configuration
 
