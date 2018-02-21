@@ -7,8 +7,8 @@
 while true
 do
 
-  echo "Waiting for Elasticsearch to come up."
-  sleep 10
+  echo "Waiting 60 sec for Elasticsearch to come up."
+  sleep 60
 
   # Delete Index
   echo "Deleting index .kibana"
