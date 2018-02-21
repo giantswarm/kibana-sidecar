@@ -1,6 +1,12 @@
 package config
 
+import "time"
+
 var (
+	// DaemonWaitInterval is the time to wait between periodic executions
+	// of our configuration write procedure
+	DaemonWaitInterval = 3600 * time.Second
+
 	// ElasticsearchEndpointDefault is the default endpoint for elasticsearch
 	ElasticsearchEndpointDefault = "http://elasticsearch:9200"
 
