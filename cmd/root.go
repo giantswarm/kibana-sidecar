@@ -5,6 +5,8 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+
+	"github.com/giantswarm/kibana-sidecar/config"
 )
 
 // RootCmd is the command cobra executes when no sub-command is called
@@ -15,6 +17,15 @@ var RootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		// Do Stuff Here
 	},
+}
+
+func init() {
+	RootCmd.PersistentFlags().StringVarP(
+		&config.ElasticsearchEndpoint,
+		"elasticsearch-endpoint",
+		"",
+		config.ElasticsearchEndpointDefault,
+		"Elasticsearch endpoint URL, e. g. 'http://elasticsearch:9200'")
 }
 
 // Execute runs the root command

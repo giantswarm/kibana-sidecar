@@ -5,7 +5,7 @@ services:
   kibana-sidecar:
     build: .
     image: quay.io/giantswarm/kibana-sidecar
-    command: daemon
+    command: daemon --elasticsearch-endpoint http://elasticsearch:9200
     depends_on:
       - elasticsearch
 

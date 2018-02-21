@@ -10,23 +10,13 @@ import (
 
 	uuid4 "github.com/nathanwinther/go-uuid4"
 	"github.com/olivere/elastic"
+
+	"github.com/giantswarm/kibana-sidecar/config"
 )
 
 const (
-	// IndexName is the name of the Elasticsearch index
-	// where we store our config
-	IndexName = ".kibana"
-
-	// IndexPatternName is the name pattern we assume for log data
-	// indices, where * replaces the date stamp
-	IndexPatternName = "filebeat-*"
-
-	// ElasticsearchEndpointDefault is the default endpoint for elasticsearch
-	ElasticsearchEndpointDefault = "http://elasticsearch:9200"
-
-	// MaxConnectionRetries is the number of connection attempts to make
-	// at most to connect to elasticsearch
-	MaxConnectionRetries = 3
+	// The document type name index-pattern
+	indexPatternDocType = "index-pattern"
 )
 
 var (
@@ -38,7 +28,7 @@ var (
 
 // Setup creates a client and checks the connection.
 func Setup() error {
-	endpoint = ElasticsearchEndpointDefault
+	endpoint = config.ElasticsearchEndpoint
 
 	var clientErr error
 	client, clientErr = elastic.NewClient(elastic.SetURL(endpoint))
@@ -57,7 +47,7 @@ func Setup() error {
 
 // CreateIndex creates the kibana index
 func CreateIndex() error {
-	log.Printf("Creating index %s", IndexName)
+	log.Printf("Creating index %s", config.IndexName)
 
 	mapping := `{
     "settings": {
@@ -306,7 +296,7 @@ func CreateIndex() error {
     }
   }`
 
-	createIndex, err := client.CreateIndex(IndexName).Body(mapping).Do(context.Background())
+	createIndex, err := client.CreateIndex(config.IndexName).Body(mapping).Do(context.Background())
 	if err != nil {
 		return err
 	}
@@ -321,11 +311,11 @@ func CreateIndex() error {
 func WriteIndexPattern() error {
 
 	doc := new(IndexPatternDocument)
-	doc.TypeName = "index-pattern"
+	doc.TypeName = indexPatternDocType
 	doc.UpdatedAt = time.Now().Format("2006-01-02T15:04:05.000Z")
 	doc.IndexPattern = new(IndexPattern)
-	doc.IndexPattern.TimeFieldName = "@timestamp"
-	doc.IndexPattern.Title = IndexPatternName
+	doc.IndexPattern.TimeFieldName = config.TimeFieldName
+	doc.IndexPattern.Title = config.IndexPatternName
 	doc.IndexPattern.Fields = "[]"
 
 	u, err := uuid4.New()
@@ -334,7 +324,7 @@ func WriteIndexPattern() error {
 	}
 	id := "index-pattern:" + u
 	put1, err := client.Index().
-		Index(IndexName).
+		Index(config.IndexName).
 		Type("doc").
 		Id(id).
 		BodyJson(doc).
@@ -353,13 +343,13 @@ func WriteConfig() {
 
 	// set up the connection (with retries)
 	var err error
-	for i := 0; i < MaxConnectionRetries; i++ {
+	for i := 0; i < config.MaxConnectionRetries; i++ {
 		err = Setup()
 		if err == nil {
 			break
 		} else {
-			if i == (MaxConnectionRetries - 1) {
-				log.Printf("Could not connect to elasticsearch after %d attempts", i)
+			if i == (config.MaxConnectionRetries - 1) {
+				log.Printf("Could not connect to elasticsearch after %d attempts", (i + 1))
 				return
 			}
 		}
@@ -367,7 +357,7 @@ func WriteConfig() {
 		time.Sleep(10 * time.Second)
 	}
 
-	exists, err := client.IndexExists(IndexName).Do(context.Background())
+	exists, err := client.IndexExists(config.IndexName).Do(context.Background())
 	if err != nil {
 		log.Printf("Could not determine if Elasticsearch index exists at %s. Skipping.", endpoint)
 		log.Println(err)
