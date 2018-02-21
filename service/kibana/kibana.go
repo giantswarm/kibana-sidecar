@@ -307,6 +307,20 @@ func CreateIndex() error {
 	return nil
 }
 
+// DeleteIndex deletes the index with our configured name
+func DeleteIndex() error {
+	deleteIndex, err := client.DeleteIndex(config.IndexName).Do(context.Background())
+	if err != nil {
+		return err
+	}
+
+	if !deleteIndex.Acknowledged {
+		log.Println("Info: Index deletion has not been acknowledged. Keeping fingers crossed.")
+	}
+
+	return nil
+}
+
 // WriteIndexPattern creates the index-pattern document
 func WriteIndexPattern() error {
 
@@ -364,16 +378,23 @@ func WriteConfig() {
 		return
 	}
 
-	if !exists {
-		err = CreateIndex()
+	if exists {
+		err = DeleteIndex()
 		if err != nil {
-			log.Printf("Could not create index:")
+			log.Printf("Could not delete index '%s' that was already existing.", config.IndexName)
 			log.Println(err)
 			return
 		}
 	}
 
-	// now we can actually create our docs
+	err = CreateIndex()
+	if err != nil {
+		log.Printf("Could not create index:")
+		log.Println(err)
+		return
+	}
+
+	// now we can actually create our config
 	err = WriteIndexPattern()
 	if err != nil {
 		log.Println("Cloud not create index-pattern document.")
