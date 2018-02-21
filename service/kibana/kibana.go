@@ -343,6 +343,22 @@ func WriteIndexPattern() error {
 		Id(id).
 		BodyJson(doc).
 		Do(context.Background())
+// WriteConfigDocument writes the "config" document
+func WriteConfigDocument(patternID string) error {
+	doc := new(ConfigDocument)
+	doc.TypeName = configDocType
+	doc.UpdatedAt = time.Now().Format("2006-01-02T15:04:05.000Z")
+	doc.BuildNum = 16350 // TODO: where should that really be coming from?
+	doc.DefaultIndex = patternID
+
+	id := fmt.Sprintf("%s:%s", configDocType, "6.1.1") // TODO: where should that '6.1.1' really be coming from?
+
+	put, err := client.Index().
+		Index(config.IndexName).
+		Type("doc").
+		Id(id).
+		BodyJson(doc).
+		Do(context.Background())
 	if err != nil {
 		return err
 	}
