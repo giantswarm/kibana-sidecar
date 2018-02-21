@@ -22,5 +22,5 @@ var (
 
 	// MaxConnectionRetries is the number of connection attempts to make
 	// at most to connect to elasticsearch (per cycle)
-	MaxConnectionRetries = 3
+	MaxConnectionRetries = 5
 )
