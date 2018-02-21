@@ -20,7 +20,7 @@ var (
 
 	// IndexPatternName is the name pattern we assume for log data
 	// indices, where * replaces the date stamp
-	IndexPatternName = "filebeat-*"
+	IndexPatternName = "fluentd-*"
 
 	// TimeFieldName is the field Kibana assumes in index documents carrying
 	// the date/time information for a log entry
