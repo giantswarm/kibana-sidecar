@@ -17,6 +17,9 @@ import (
 const (
 	// The document type name index-pattern
 	indexPatternDocType = "index-pattern"
+
+	// typer name for the "config" document
+	configDocType = "config"
 )
 
 var (
@@ -28,15 +31,14 @@ var (
 
 // Setup creates a client and checks the connection.
 func Setup() error {
-	endpoint = config.ElasticsearchEndpoint
-
+	log.Printf("Attempting to connect to Elasticsearch endpoint '%s'", config.ElasticsearchEndpoint)
 	var clientErr error
-	client, clientErr = elastic.NewClient(elastic.SetURL(endpoint))
+	client, clientErr = elastic.NewClient(elastic.SetURL(config.ElasticsearchEndpoint))
 	if clientErr != nil {
 		return clientErr
 	}
 
-	info, code, err := client.Ping(endpoint).Do(context.Background())
+	info, code, err := client.Ping(config.ElasticsearchEndpoint).Do(context.Background())
 	if err != nil {
 		return err
 	}
@@ -322,7 +324,7 @@ func DeleteIndex() error {
 }
 
 // WriteIndexPattern creates the index-pattern document
-func WriteIndexPattern() error {
+func WriteIndexPattern() (string, error) {
 
 	doc := new(IndexPatternDocument)
 	doc.TypeName = indexPatternDocType
@@ -332,17 +334,26 @@ func WriteIndexPattern() error {
 	doc.IndexPattern.Title = config.IndexPatternName
 	doc.IndexPattern.Fields = "[]"
 
-	u, err := uuid4.New()
+	uid, err := uuid4.New()
 	if err != nil {
-		return err
+		return "", err
 	}
-	id := "index-pattern:" + u
+	id := fmt.Sprintf("%s:%s", indexPatternDocType, uid)
 	put1, err := client.Index().
 		Index(config.IndexName).
 		Type("doc").
 		Id(id).
 		BodyJson(doc).
 		Do(context.Background())
+	if err != nil {
+		return "", err
+	}
+
+	log.Printf("Added %s to index %s", put1.Id, put1.Index)
+
+	return uid, nil
+}
+
 // WriteConfigDocument writes the "config" document
 func WriteConfigDocument(patternID string) error {
 	doc := new(ConfigDocument)
@@ -363,7 +374,7 @@ func WriteConfigDocument(patternID string) error {
 		return err
 	}
 
-	fmt.Printf("Added %s to index %s", put1.Id, put1.Index)
+	log.Printf("Added %s to index %s", put.Id, put.Index)
 
 	return nil
 }
@@ -379,17 +390,17 @@ func WriteConfig() {
 			break
 		} else {
 			if i == (config.MaxConnectionRetries - 1) {
-				log.Printf("Could not connect to elasticsearch after %d attempts", (i + 1))
+				log.Printf("Could not connect to Elasticsearch after %d attempts", (i + 1))
 				return
 			}
 		}
-		log.Println("Couldn't initialize elasticsearch client yet. Wating...")
+		log.Println("Couldn't connect to Elasticsearch. Wating...")
 		time.Sleep(10 * time.Second)
 	}
 
 	exists, err := client.IndexExists(config.IndexName).Do(context.Background())
 	if err != nil {
-		log.Printf("Could not determine if Elasticsearch index exists at %s. Skipping.", endpoint)
+		log.Printf("ERROR: Could not determine if Elasticsearch index exists at %s. Skipping.", endpoint)
 		log.Println(err)
 		return
 	}
@@ -397,7 +408,7 @@ func WriteConfig() {
 	if exists {
 		err = DeleteIndex()
 		if err != nil {
-			log.Printf("Could not delete index '%s' that was already existing.", config.IndexName)
+			log.Printf("ERROR: Could not delete index '%s' that was already existing.", config.IndexName)
 			log.Println(err)
 			return
 		}
@@ -405,15 +416,21 @@ func WriteConfig() {
 
 	err = CreateIndex()
 	if err != nil {
-		log.Printf("Could not create index:")
+		log.Printf("ERROR: Could not create index:")
 		log.Println(err)
 		return
 	}
 
 	// now we can actually create our config
-	err = WriteIndexPattern()
+	patternID, err := WriteIndexPattern()
 	if err != nil {
-		log.Println("Cloud not create index-pattern document.")
+		log.Println("ERROR: Cloud not create index-pattern document.")
+		log.Println(err)
+	}
+
+	err = WriteConfigDocument(patternID)
+	if err != nil {
+		log.Println("ERROR: Cloud not create config document.")
 		log.Println(err)
 	}
 
