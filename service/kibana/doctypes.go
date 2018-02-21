@@ -58,6 +58,10 @@ type FieldDefinition struct {
 //
 type ConfigDocument struct {
 	AbstractDocument
-	BuildNum     int64  `json:"buildNum"`
+	Config *ConfigDefinition `json:"config"`
+}
+
+type ConfigDefinition struct {
+	BuildNum     int32  `json:"buildNum"`
 	DefaultIndex string `json:"defaultIndex"`
 }

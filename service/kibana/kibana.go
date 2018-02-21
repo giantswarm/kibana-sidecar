@@ -356,13 +356,21 @@ func WriteIndexPattern() (string, error) {
 
 // WriteConfigDocument writes the "config" document
 func WriteConfigDocument(patternID string) error {
+	esVersion, err := client.ElasticsearchVersion(config.ElasticsearchEndpoint)
+	if err != nil {
+		return err
+	}
+
 	doc := new(ConfigDocument)
 	doc.TypeName = configDocType
 	doc.UpdatedAt = time.Now().Format("2006-01-02T15:04:05.000Z")
-	doc.BuildNum = 16350 // TODO: where should that really be coming from?
-	doc.DefaultIndex = patternID
+	doc.Config = new(ConfigDefinition)
+	doc.Config.DefaultIndex = patternID
 
-	id := fmt.Sprintf("%s:%s", configDocType, "6.1.1") // TODO: where should that '6.1.1' really be coming from?
+	// Where can we take the actual build number from? Does it matter?
+	doc.Config.BuildNum = 16350
+
+	id := fmt.Sprintf("%s:%s", configDocType, esVersion)
 
 	put, err := client.Index().
 		Index(config.IndexName).
@@ -394,7 +402,7 @@ func WriteConfig() {
 				return
 			}
 		}
-		log.Println("Couldn't connect to Elasticsearch. Wating...")
+		log.Println("Couldn't connect to Elasticsearch. Waiting...")
 		time.Sleep(10 * time.Second)
 	}
 
