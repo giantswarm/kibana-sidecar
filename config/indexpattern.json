@@ -4,16 +4,6 @@
   "index-pattern": {
     "title": "fluentd-*",
     "timeFieldName": "@timestamp",
-    "fields": "[
-      {
-        \"name\": \"kubernetes.namespace_name\",
-        \"type\": \"string\",
-        \"count\": 100,
-        \"scripted\": false,
-        \"searchable\": true,
-        \"aggregatable\": false,
-        \"readFromDocValues\": false
-      }
-    ]"
+    "fields": "[]"
   }
 }
