@@ -10,10 +10,10 @@ do
   echo "Waiting 60 sec for Elasticsearch to come up."
   sleep 60
 
-  # Delete Index
-  echo "Deleting index .kibana"
-  curl -s -XDELETE "$ELASTICSEARCH_ENDPOINT/.kibana" || echo "Index didn't exist, not deleted."
-  echo ""
+  ## Delete Index
+  #echo "Deleting index .kibana"
+  #curl -s -XDELETE "$ELASTICSEARCH_ENDPOINT/.kibana" || echo "Index didn't exist, not deleted."
+  #echo ""
 
   # Create Index
   echo "Creating index .kibana"
