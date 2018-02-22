@@ -8,7 +8,7 @@
 INDEX=.kibana
 
 # Check env variable
-if ["$ELASTICSEARCH_ENDPOINT" == ""]; then
+if [ "$ELASTICSEARCH_ENDPOINT" == "" ]; then
   echo "ERROR: Environment variable ELASTICSEARCH_ENDPOINT is not set. Exiting."
   exit 1
 fi
