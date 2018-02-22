@@ -57,5 +57,5 @@ do
     "${ELASTICSEARCH_ENDPOINT}/${INDEX}/doc/config:6.1.1"
   echo ""
 
-	sleep 3600
+  sleep 3600
 done
