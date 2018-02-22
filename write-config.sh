@@ -14,7 +14,7 @@ do
   sleep 3
 
   # Check if index exists
-  curl -s --head "$ELASTICSEARCH_ENDPOINT/$INDEX"|grep --quiet "HTTP/1.1 200"
+  curl -s --head "$ELASTICSEARCH_ENDPOINT/$INDEX"|grep -q "HTTP/1.1 200"
   OKAY=$?
 
   if [ "$OKAY" != "0" ]; then
