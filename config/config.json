@@ -3,7 +3,7 @@
   "updated_at": "2018-02-19T14:29:37.545Z",
   "config": {
     "buildNum": 16350,
-    "defaultIndex": "d308c4f0-157e-11e8-8862-f19ddd0b5982",
+    "defaultIndex": "giantswarm",
     "dateFormat:tz": "UTC",
     "dateFormat": "YYYY-MM-DD HH:mm:ss.SSS",
     "dateFormat:dow": "Monday",

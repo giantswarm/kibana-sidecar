@@ -27,7 +27,7 @@ do
   curl -s -XPUT \
     -H 'Content-Type: application/json' \
     -d @/config/indexpattern.json \
-    "$ELASTICSEARCH_ENDPOINT/.kibana/doc/index-pattern:d308c4f0-157e-11e8-8862-f19ddd0b5982"
+    "$ELASTICSEARCH_ENDPOINT/.kibana/doc/index-pattern:giantswarm"
   echo ""
 
   # Write config document
