@@ -4,6 +4,8 @@
 #
 # - `ELASTICSEARCH_ENDPOINT`: URL to elasticsearch
 
+set -u
+
 # Our index name
 INDEX=.kibana
 
