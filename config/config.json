@@ -5,7 +5,7 @@
     "buildNum": 16350,
     "defaultIndex": "giantswarm",
     "dateFormat:tz": "UTC",
-    "dateFormat": "YYYY-MM-DD HH:mm:ss.SSS",
+    "dateFormat": "YYYY-MM-DD HH:mm:ss",
     "dateFormat:dow": "Monday",
     "discover:sort:defaultOrder": "asc"
   }
