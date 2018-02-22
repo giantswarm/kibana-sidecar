@@ -1,0 +1,9 @@
+{
+  "type": "index-pattern",
+  "updated_at": "2018-02-19T15:59:07.941Z",
+  "index-pattern": {
+    "title": "fluentd-*",
+    "timeFieldName": "@timestamp",
+    "fields": "[]"
+  }
+}

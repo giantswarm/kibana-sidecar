@@ -1,0 +1,23 @@
+version: "3"
+
+services:
+
+  kibana-sidecar:
+    build: .
+    image: quay.io/giantswarm/kibana-sidecar
+    environment:
+      ELASTICSEARCH_ENDPOINT: http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+
+  elasticsearch:
+    image: quay.io/giantswarm/elasticsearch-oss:6.1.1
+    ports:
+      - 9200:9200
+
+  kibana:
+    image: quay.io/giantswarm/kibana-oss:6.1.1
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch
