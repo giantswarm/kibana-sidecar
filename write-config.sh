@@ -16,8 +16,17 @@ fi
 while true
 do
 
-  echo "Waiting 60 sec for Elasticsearch to come up."
-  sleep 60
+  # Wait for Elasticsearch to become available
+  OKAY="unset"
+  curl -s --head "$ELASTICSEARCH_ENDPOINT"|grep -q "HTTP/1.1 200"
+  OKAY=$?
+  while [ "$OKAY" != "0" ]; do
+    echo "Waiting for Elasticsearch to become available"
+    sleep 10
+    curl -s --head "$ELASTICSEARCH_ENDPOINT"|grep -q "HTTP/1.1 200"
+    OKAY=$?
+  done
+
 
   # Check if index exists
   curl -s --head "$ELASTICSEARCH_ENDPOINT/$INDEX"|grep -q "HTTP/1.1 200"
