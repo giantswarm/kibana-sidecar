@@ -7,6 +7,12 @@
 # Our index name
 INDEX=.kibana
 
+# Check env variable
+if ["$ELASTICSEARCH_ENDPOINT" == ""]; then
+  echo "ERROR: Environment variable ELASTICSEARCH_ENDPOINT is not set. Exiting."
+  exit 1
+fi
+
 while true
 do
 
