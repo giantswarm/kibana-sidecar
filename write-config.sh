@@ -10,8 +10,8 @@ INDEX=.kibana
 while true
 do
 
-  echo "Waiting 3 sec for Elasticsearch to come up."
-  sleep 3
+  echo "Waiting 60 sec for Elasticsearch to come up."
+  sleep 60
 
   # Check if index exists
   curl -s --head "$ELASTICSEARCH_ENDPOINT/$INDEX"|grep -q "HTTP/1.1 200"
