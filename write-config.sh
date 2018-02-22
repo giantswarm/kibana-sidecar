@@ -4,40 +4,43 @@
 #
 # - `ELASTICSEARCH_ENDPOINT`: URL to elasticsearch
 
+# Our index name
+INDEX=.kibana
+
 while true
 do
 
-  echo "Waiting 60 sec for Elasticsearch to come up."
-  sleep 60
+  echo "Waiting 3 sec for Elasticsearch to come up."
+  sleep 3
 
-  ## Delete Index
-  #echo "Deleting index .kibana"
-  #curl -s -XDELETE "$ELASTICSEARCH_ENDPOINT/.kibana" || echo "Index didn't exist, not deleted."
-  #echo ""
+  # Check if index exists
+  curl -s --head "$ELASTICSEARCH_ENDPOINT/$INDEX"|grep --quiet "HTTP/1.1 200"
+  OKAY=$?
 
-  # Create Index
-  echo "Creating index .kibana"
-  curl -s -XPUT "$ELASTICSEARCH_ENDPOINT/.kibana" \
-    -H 'Content-Type: application/json' \
-    -d @/config/index-mapping.json
-  echo ""
+  if [ "$OKAY" != "0" ]; then
+    # Create Index
+    echo "Creating index .kibana"
+    curl -s -XPUT "$ELASTICSEARCH_ENDPOINT/$INDEX" \
+      -H 'Content-Type: application/json' \
+      -d @config/index-mapping.json
+    echo ""
+  fi
 
   # Write index pattern document
   echo "Writing index-pattern document"
   curl -s -XPUT \
     -H 'Content-Type: application/json' \
-    -d @/config/indexpattern.json \
-    "$ELASTICSEARCH_ENDPOINT/.kibana/doc/index-pattern:giantswarm"
+    -d @config/indexpattern.json \
+    "$ELASTICSEARCH_ENDPOINT/$INDEX/doc/index-pattern:giantswarm"
   echo ""
 
   # Write config document
   echo "Writing config document"
   curl -s -XPUT \
     -H 'Content-Type: application/json' \
-    -d @/config/config.json \
-    "$ELASTICSEARCH_ENDPOINT/.kibana/doc/config:6.1.1"
+    -d @config/config.json \
+    "$ELASTICSEARCH_ENDPOINT/$INDEX/doc/config:6.1.1"
   echo ""
 
-	echo "Waiting for an hour"
 	sleep 3600
 done
