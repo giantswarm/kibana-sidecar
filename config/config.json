@@ -1,8 +1,8 @@
 {
   "type": "config",
-  "updated_at": "2018-02-19T14:29:37.545Z",
+  "updated_at": "2018-07-05T11:26:34.541Z",
   "config": {
-    "buildNum": 16350,
+    "buildNum": 16380,
     "defaultIndex": "giantswarm",
     "dateFormat:tz": "UTC",
     "dateFormat": "YYYY-MM-DD HH:mm:ss",
