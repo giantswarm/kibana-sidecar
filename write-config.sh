@@ -56,7 +56,7 @@ do
   curl -s -XPUT \
     -H 'Content-Type: application/json' \
     -d @config/config.json \
-    "${ELASTICSEARCH_ENDPOINT}/${INDEX}/doc/config:6.1.1"
+    "${ELASTICSEARCH_ENDPOINT}/${INDEX}/doc/config:${KIBANA_VERSION}"
   echo ""
 
   sleep 3600
