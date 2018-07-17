@@ -7,9 +7,7 @@ A sidecar for Kibana to apply a prepared configuration
 
 ## Docs
 
-_Note: As this is work in progress, understand this as specs._
-
-We write the following documents to the `.kibana` index:
+We write documents like the following to the `.kibana` index (see the [`config`](https://github.com/giantswarm/kibana-sidecar/tree/master/config) folder for details):
 
 ### Index Pattern
 
